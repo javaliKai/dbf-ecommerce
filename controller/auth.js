@@ -3,6 +3,7 @@ import { findCustomerByEmail } from '../dao/customerDAO.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { findClerkByEmail } from '../dao/clerkDAO.js';
 
 dotenv.config();
 
@@ -54,6 +55,58 @@ export const logCustomerIn = async (req, res, next) => {
     });
 
     return res.status(200).json({ token, cust_id: customer.cust_id });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logClerkIn = async (req, res, next) => {
+  // Get validation result
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error(
+      'Input validation failed, entered data is incorrect.'
+    );
+    error.status = 422;
+    error.data = errors.array();
+    return next(error);
+  }
+
+  // Get request form data
+  const { email, password } = req.body;
+
+  // Check whether email registered in db
+  try {
+    const clerk = await findClerkByEmail(email);
+
+    // Throw error when there's no customer found
+    if (!clerk) {
+      const error = new Error('Clerk is not registered.');
+      error.status = 401;
+      return next(error);
+    }
+
+    // Proceed to password authentication if there's clerk found
+    const hashedPassword = clerk.clerk_password;
+    const isMatch = await bcrypt.compare(password, hashedPassword);
+    if (!isMatch) {
+      const error = new Error('Password or email is incorrect');
+      error.status = 401;
+      return next(error);
+    }
+
+    // Generate token...
+    const payload = {
+      clerk_id: clerk.clerk_id,
+      clerk_name: clerk.clerk_name,
+      clerk_email: clerk.clerk_email,
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
+
+    return res.status(200).json({ token, clerk_id: clerk.clerk_id });
   } catch (error) {
     next(error);
   }

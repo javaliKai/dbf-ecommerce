@@ -41,31 +41,3 @@ export const findCustomerByEmail = async (email) => {
 
   return row.length === 0 ? null : row[0];
 };
-
-export const insertNewAddress = async ({
-  customerId,
-  country,
-  province,
-  state,
-  addressDetail,
-}) => {
-  const sql = `
-    INSERT INTO customer_address(cust_id, country, province, state, address_detail) 
-    VALUES (?, ?, ?, ?, ?)
-  `;
-  const values = [customerId, country, province, state, addressDetail];
-
-  const [row] = await conn.query(sql, values);
-
-  // Return back the newly created address with address ID
-  const newAddress = {
-    addressId: row.insertId,
-    customerId,
-    country,
-    province,
-    state,
-    addressDetail,
-  };
-
-  return newAddress;
-};

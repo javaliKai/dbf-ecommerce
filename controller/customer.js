@@ -1,8 +1,4 @@
-import {
-  getAllCustomers,
-  insertNewAddress,
-  insertNewCustomer,
-} from '../dao/customerDAO.js';
+import { getAllCustomers, insertNewCustomer } from '../dao/customerDAO.js';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import {
@@ -16,8 +12,18 @@ import {
   fetchAllCustomerCartItems,
   verifyCustomerCart,
 } from '../dao/cartDAO.js';
-import { insertNewOrder, verifyCustomerOrder } from '../dao/orderDAO.js';
+import {
+  fetchCustomerOrder,
+  fetchOrderDetail,
+  insertNewOrder,
+} from '../dao/orderDAO.js';
 import { fetchAllCustomerShipping } from '../dao/shippingDAO.js';
+import { fetchAllCustomerNotification } from '../dao/notificationDAO.js';
+import {
+  findSelectedCustomerAddressId,
+  insertNewAddress,
+  selectCustomerAddress,
+} from '../dao/customerAddressDAO.js';
 
 export const fetchAllCustomers = async (req, res, next) => {
   try {
@@ -75,6 +81,33 @@ export const addNewAddress = async (req, res, next) => {
   try {
     const data = await insertNewAddress(addressFormData);
     res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const selectAddress = async (req, res, next) => {
+  // Get validation result
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error(
+      'Input validation failed, entered data is incorrect.'
+    );
+    error.status = 422;
+    error.data = errors.array();
+    return next(error);
+  }
+
+  // Get form data from request
+  const { addressId } = req.body;
+
+  try {
+    // Query the address table
+    const selectedAddress = await selectCustomerAddress(
+      req.customerId,
+      addressId
+    );
+    res.status(200).send(selectedAddress);
   } catch (error) {
     next(error);
   }
@@ -159,6 +192,29 @@ export const addNewCartItem = async (req, res, next) => {
   }
 };
 
+export const getAllCustomerOrders = async (req, res, next) => {
+  try {
+    // Perform query on the order database
+    const orderData = await fetchCustomerOrder(req.customerId);
+    res.status(200).send(orderData);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCustomerOrderDetail = async (req, res, next) => {
+  // Get orderId from params
+  const orderId = req.params.orderId;
+
+  try {
+    // Perform query on the order table
+    const orderDetail = await fetchOrderDetail(orderId);
+    res.status(200).send(orderDetail);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const addNewOrder = async (req, res, next) => {
   // Get validation result
   const errors = validationResult(req);
@@ -196,6 +252,16 @@ export const addNewOrder = async (req, res, next) => {
       return next(error);
     }
 
+    // Verify that customer has an address selected
+    const selectedAddressId = await findSelectedCustomerAddressId(
+      req.customerId
+    );
+    if (!selectedAddressId) {
+      const error = new Error('Add order failed, address is not verified.');
+      error.status = 400;
+      return next(error);
+    }
+
     // Make sure cart is not empty
     const customerCartItems = await fetchAllCustomerCartItems(req.customerId);
     if (customerCartItems.length == 0) {
@@ -208,7 +274,8 @@ export const addNewOrder = async (req, res, next) => {
     const newOrder = await insertNewOrder(
       req.customerId,
       cartId,
-      paymentMethod
+      paymentMethod,
+      selectedAddressId
     );
 
     // Perform cart query to the database to delete the cart item data (NOT THE CART ITSELF)
@@ -222,23 +289,22 @@ export const addNewOrder = async (req, res, next) => {
 };
 
 export const getAllShipping = async (req, res, next) => {
-  // Get validation result
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const error = new Error(
-      'Input validation failed, entered data is incorrect.'
-    );
-    error.status = 422;
-    error.data = errors.array();
-    return next(error);
-  }
-
   try {
     // Query the shipping table
     const shippingData = await fetchAllCustomerShipping(req.customerId);
 
     // Return the shipping data
     res.status(200).send(shippingData);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllNotifications = async (req, res, next) => {
+  try {
+    // Perform query on notification table
+    const notificationData = await fetchAllCustomerNotification(req.customerId);
+    res.send(notificationData);
   } catch (error) {
     next(error);
   }

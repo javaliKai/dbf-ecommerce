@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 /** A middleware that ensures that an auth token is provided */
-const auth = (req, res, next) => {
+const clerkAuth = (req, res, next) => {
   // Get token from header
   const tokenHeader = req.header('Authorization');
 
@@ -25,12 +25,13 @@ const auth = (req, res, next) => {
       return next(error);
     }
 
-    if (!decodedToken.cust_id) {
+    // Set the user id to every req session
+    if (!decodedToken.clerk_id) {
       const error = new Error('Invalid token.');
       error.status = 401;
       return next(error);
     } else {
-      req.customerId = decodedToken.cust_id;
+      req.clerkId = decodedToken.clerk_id;
       next();
     }
   } catch (error) {
@@ -38,4 +39,4 @@ const auth = (req, res, next) => {
   }
 };
 
-export default auth;
+export default clerkAuth;

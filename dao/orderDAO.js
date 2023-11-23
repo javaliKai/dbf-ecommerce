@@ -2,13 +2,18 @@ import connectDB from '../util/connectDB.js';
 
 const conn = connectDB();
 
-export const insertNewOrder = async (customerId, cartId, paymentMethod) => {
+export const insertNewOrder = async (
+  customerId,
+  cartId,
+  paymentMethod,
+  selectedAddressId
+) => {
   // Perform insertion to order table
   let sql = `
-    INSERT INTO dbf_ecommerce.order(customer_id, date_issued, order_status, payment_method, date_finished)
-    VALUES (?, NOW(), 'waiting', ?, NULL)
+    INSERT INTO dbf_ecommerce.order(customer_id, date_issued, order_status, payment_method, date_finished, selected_address)
+    VALUES (?, NOW(), 'waiting', ?, NULL, ?)
   `;
-  let values = [customerId, paymentMethod];
+  let values = [customerId, paymentMethod, selectedAddressId];
   const [orderRow] = await conn.query(sql, values);
   const orderId = orderRow.insertId;
 
@@ -45,9 +50,10 @@ export const insertNewOrder = async (customerId, cartId, paymentMethod) => {
   // 5. Return the new order object
   const newOrderObj = {
     order_id: orderId,
-    customerId: customerId,
+    customerId,
     order_status: 'waiting',
-    paymentMethod: paymentMethod,
+    paymentMethod,
+    selectedAddress: selectedAddressId,
   };
 
   return newOrderObj;
@@ -60,4 +66,41 @@ export const verifyCustomerOrder = async (customerId, orderId) => {
   const [row] = await conn.query(sql, values);
 
   return row.length === 0 ? null : row[0];
+};
+
+export const fetchAllOrders = async () => {
+  const sql = `SELECT * FROM dbf_ecommerce.order`;
+  const [row] = await conn.query(sql);
+  return row;
+};
+
+export const fetchOrderDetail = async (orderId) => {
+  const sql = `
+    SELECT * FROM dbf_ecommerce.order 
+    INNER JOIN order_item USING (order_id)
+    HAVING order_id=?
+  `;
+  const values = [orderId];
+
+  const [row] = await conn.query(sql, values);
+
+  return row;
+};
+
+export const fetchOrder = async (orderId) => {
+  const sql = `SELECT * FROM dbf_ecommerce.order WHERE order_id=?`;
+  const values = [orderId];
+
+  const [row] = await conn.query(sql, values);
+
+  return row.length === 0 ? null : row[0];
+};
+
+export const fetchCustomerOrder = async (customerId) => {
+  const sql = `SELECT * FROM dbf_ecommerce.order WHERE customer_id=?`;
+  const values = [customerId];
+
+  const [row] = await conn.query(sql, values);
+
+  return row;
 };

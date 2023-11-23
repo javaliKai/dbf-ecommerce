@@ -10,6 +10,10 @@ import {
   addNewCartItem,
   addNewOrder,
   getAllShipping,
+  getAllNotifications,
+  selectAddress,
+  getAllCustomerOrders,
+  getCustomerOrderDetail,
 } from '../controller/customer.js';
 import auth from '../middlewares/auth.js';
 
@@ -69,6 +73,23 @@ router.post(
 );
 
 /**
+ * @Route     /customer/select-address
+ * @Method    PUT
+ * @Access    Private
+ * @Desc      Select an address that will be used for shipment
+ */
+router.put(
+  '/select-address',
+  auth,
+  [
+    body('addressId')
+      .notEmpty()
+      .withMessage('Please provide a valid addressId.'),
+  ],
+  selectAddress
+);
+
+/**
  * @Route     /customer/add-wishlist/:productId
  * @Method    POST
  * @Access    Private
@@ -115,6 +136,22 @@ router.post(
 
 /**
  * @Route     /customer/order
+ * @Method    GET
+ * @Access    Private
+ * @Desc      Get all the customer's order
+ */
+router.get('/order', auth, getAllCustomerOrders);
+
+/**
+ * @Route     /customer/order/:orderId
+ * @Method    GET
+ * @Access    Private
+ * @Desc      Get the customer's order detail
+ */
+router.get('/order/:orderId', auth, getCustomerOrderDetail);
+
+/**
+ * @Route     /customer/order
  * @Method    POST
  * @Access    Private
  * @Desc      Create a new order from the cart data
@@ -142,6 +179,14 @@ router.post(
  * @Desc      View all customer's shipping status
  */
 router.get('/shipping', auth, getAllShipping);
+
+/**
+ * @Route     /customer/notification
+ * @Method    GET
+ * @Access    Private
+ * @Desc      View all customer's notification
+ */
+router.get('/notification', auth, getAllNotifications);
 
 /** The whole routes of the user module. */
 export const customerRoutes = router;
