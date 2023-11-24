@@ -78,11 +78,35 @@ export const verifyCustomerCart = async (customerId, cartId) => {
   return row.length === 0 ? null : row[0];
 };
 
-export const deleteCartItem = async (cartId) => {
+export const deleteAllCartItem = async (cartId) => {
   const sql = `DELETE FROM cart_item WHERE cart_id=?`;
   const values = [cartId];
 
   const [row] = await conn.query(sql, values);
 
-  return cartId;
+  return row.affectedRows;
+};
+
+export const deleteCartItem = async (cartItemId) => {
+  const sql = `
+    DELETE FROM cart_item WHERE cartitem_id=?
+  `;
+  const values = [cartItemId];
+
+  const [row] = await conn.query(sql, values);
+
+  return row.affectedRows;
+};
+
+export const verifyCustomerCartItem = async (customerId, cartItemId) => {
+  const sql = `
+    SELECT * FROM cart_item 
+    INNER JOIN cart USING (cart_id)
+    HAVING customer_id=? AND cartitem_id=?;
+  `;
+  const values = [customerId, cartItemId];
+
+  const [row] = await conn.query(sql, values);
+
+  return row.length === 0 ? null : true;
 };

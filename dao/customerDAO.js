@@ -41,3 +41,25 @@ export const findCustomerByEmail = async (email) => {
 
   return row.length === 0 ? null : row[0];
 };
+
+export const updateCustomer = async ({ customerId, name, phone, email }) => {
+  const sql = `
+    UPDATE customer SET
+      cust_name=?,
+      cust_phone=?,
+      cust_email=?
+    WHERE cust_id=? 
+  `;
+  const values = [name, phone, email, customerId];
+
+  await conn.query(sql, values);
+
+  const updatedCustomer = {
+    cust_id: customerId,
+    cust_name: name,
+    cust_phone: phone,
+    cust_email: email,
+  };
+
+  return updatedCustomer;
+};

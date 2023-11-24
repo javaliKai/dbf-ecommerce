@@ -14,6 +14,8 @@ import {
   selectAddress,
   getAllCustomerOrders,
   getCustomerOrderDetail,
+  updateCustomerInfo,
+  removeCartItem,
 } from '../controller/customer.js';
 import auth from '../middlewares/auth.js';
 
@@ -135,6 +137,14 @@ router.post(
 );
 
 /**
+ * @Route     /customer/cart/remove/:cartItemId
+ * @Method    DELETE
+ * @Access    Private
+ * @Desc      Delete cart item from cart with cartiItemId
+ */
+router.delete('/cart/remove/:cartItemId', auth, removeCartItem);
+
+/**
  * @Route     /customer/order
  * @Method    GET
  * @Access    Private
@@ -187,6 +197,29 @@ router.get('/shipping', auth, getAllShipping);
  * @Desc      View all customer's notification
  */
 router.get('/notification', auth, getAllNotifications);
+
+/**
+ * @Route     /customer/update
+ * @Method    PUT
+ * @Access    Private
+ * @Desc      Update the customer info
+ */
+router.put(
+  '/update',
+  auth,
+  [
+    body('customerId')
+      .notEmpty()
+      .withMessage('Please provide a valid customerId.'),
+    body('name').trim().notEmpty().withMessage('Please provide a valid name.'),
+    body('phone')
+      .trim()
+      .notEmpty()
+      .withMessage('Please provide a valid phone.'),
+    body('email').trim().isEmail().withMessage('Please provide a valid email.'),
+  ],
+  updateCustomerInfo
+);
 
 /** The whole routes of the user module. */
 export const customerRoutes = router;

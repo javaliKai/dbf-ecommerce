@@ -1,4 +1,8 @@
-import { getAllCustomers, insertNewCustomer } from '../dao/customerDAO.js';
+import {
+  getAllCustomers,
+  insertNewCustomer,
+  updateCustomer,
+} from '../dao/customerDAO.js';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import {
@@ -8,9 +12,11 @@ import {
 } from '../dao/wishlistDAO.js';
 import {
   addCartItem,
+  deleteAllCartItem,
   deleteCartItem,
   fetchAllCustomerCartItems,
   verifyCustomerCart,
+  verifyCustomerCartItem,
 } from '../dao/cartDAO.js';
 import {
   fetchCustomerOrder,
@@ -192,6 +198,30 @@ export const addNewCartItem = async (req, res, next) => {
   }
 };
 
+export const removeCartItem = async (req, res, next) => {
+  // Get cartItemId from params
+  const { cartItemId } = req.params;
+
+  try {
+    // Validate whether the cartItemId belongs to the customer cart
+    const isCartItemVerified = await verifyCustomerCartItem(
+      req.customerId,
+      cartItemId
+    );
+
+    if (!isCartItemVerified) {
+      const error = new Error('Unauthorized cart item deletion request.');
+      error.status = 401;
+      return next(error);
+    }
+
+    const affectedRows = await deleteCartItem(cartItemId);
+    res.status(200).send({ affectedRows });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getAllCustomerOrders = async (req, res, next) => {
   try {
     // Perform query on the order database
@@ -279,7 +309,7 @@ export const addNewOrder = async (req, res, next) => {
     );
 
     // Perform cart query to the database to delete the cart item data (NOT THE CART ITSELF)
-    await deleteCartItem(cartId);
+    await deleteAllCartItem(cartId);
 
     // Send newly created order as the response
     res.status(200).send(newOrder);
@@ -305,6 +335,38 @@ export const getAllNotifications = async (req, res, next) => {
     // Perform query on notification table
     const notificationData = await fetchAllCustomerNotification(req.customerId);
     res.send(notificationData);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateCustomerInfo = async (req, res, next) => {
+  // Get validation result
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error(
+      'Input validation failed, entered data is incorrect.'
+    );
+    error.status = 422;
+    error.data = errors.array();
+    return next(error);
+  }
+
+  // Get form data from body
+  const customerFormData = req.body;
+
+  // Validate whether the current logged in user has the same id with the submitted customerId
+  if (customerFormData.customerId !== req.customerId) {
+    const error = new Error('Update failed, unauthorized access.');
+    error.status = 401;
+    return next(error);
+  }
+
+  try {
+    // Perform query to the customer table
+    const updatedCustomer = await updateCustomer(customerFormData);
+
+    res.status(200).send(updatedCustomer);
   } catch (error) {
     next(error);
   }
