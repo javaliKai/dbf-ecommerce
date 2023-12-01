@@ -4,7 +4,9 @@
   "description": "DB fundamentals project",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server"
+    "client": "npm run dev --prefix groovy-goodies",
+    "server": "nodemon server --ignore client",
+    "start": "concurrently \"npm run client\" \"npm run server\""
   },
   "keywords": [
     "ecommerce"
@@ -22,6 +24,7 @@
   },
   "type": "module",
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^3.0.1"
   }
 }

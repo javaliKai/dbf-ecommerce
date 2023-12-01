@@ -1,4 +1,5 @@
 import {
+  findCustomerByEmail,
   getAllCustomers,
   insertNewCustomer,
   updateCustomer,
@@ -54,6 +55,14 @@ export const registerNewCustomer = async (req, res, next) => {
 
   // Get the form data from incoming request
   const { name, phone, email, password } = req.body;
+
+  // Check whether user is already registered
+  const isRegistered = await findCustomerByEmail(email);
+  if (isRegistered) {
+    const error = new Error('Customer already exists!');
+    error.status = 401;
+    return next(error);
+  }
 
   // Hash the password
   const salt = await bcrypt.genSalt(12);

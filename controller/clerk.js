@@ -1,6 +1,6 @@
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
-import { insertNewClerk } from '../dao/clerkDAO.js';
+import { findClerkByEmail, insertNewClerk } from '../dao/clerkDAO.js';
 import {
   fetchAllOrders,
   fetchOrder,
@@ -30,6 +30,14 @@ export const registerNewClerk = async (req, res, next) => {
 
   // Get the form data from incoming request
   const { name, email, password } = req.body;
+
+  // Check whether user is already registered
+  const isRegistered = await findClerkByEmail(email);
+  if (isRegistered) {
+    const error = new Error('Clerk already exists!');
+    error.status = 401;
+    return next(error);
+  }
 
   // Hash the password
   const salt = await bcrypt.genSalt(12);

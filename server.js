@@ -29,15 +29,4 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, async () => {
   console.log(`Server is running on: http://localhost:${PORT}`);
-
-  // Testing db connection
-  // try {
-  //   const conn = connectDB();
-  //   // Execute a simple query for testing
-  //   const [row, fields] = await conn.query('SELECT * FROM clerk;');
-  //   console.log(JSON.stringify(row));
-  // } catch (error) {
-  //   console.log('DB fail to connect!');
-  //   console.log(error);
-  // }
 });
