@@ -15,3 +15,52 @@ export interface RegisterClerkRequest {
   email: string;
   password: string;
 }
+
+export interface NewAddressRequest {
+  token: string;
+  customerId: number;
+  country: string;
+  province: string;
+  state: string;
+  addressDetail: string;
+}
+
+export interface NewWishlistRequest {
+  token: string;
+  productId: string;
+}
+
+export interface AddToCartRequest {
+  token: string;
+  productId: number;
+  quantity: number;
+}
+
+export interface AddOrderRequest {
+  token: string;
+  paymentMethod: string;
+  cartId: number;
+}
+
+export interface OrderDetailRequest {
+  token: string;
+  orderId: number;
+}
+
+export interface UpdateCustomerRequest {
+  token: string;
+  customerId: number;
+  name: string;
+  phone: string;
+  email: string;
+}
+
+export interface DeleteCartItemRequest {
+  token: string;
+  cartItemId: number;
+}
+
+export interface SelectAddressRequest {
+  token: string;
+  addressId: number;
+}

@@ -219,7 +219,9 @@ export const removeCartItem = async (req, res, next) => {
     );
 
     if (!isCartItemVerified) {
-      const error = new Error('Unauthorized cart item deletion request.');
+      const error = new Error(
+        'Unauthorized cart item deletion request. Cart item may be not exist.'
+      );
       error.status = 401;
       return next(error);
     }

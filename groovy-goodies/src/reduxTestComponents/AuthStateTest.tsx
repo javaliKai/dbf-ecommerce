@@ -14,9 +14,9 @@ const AuthStateTest = () => {
 
   useEffect(() => {
     dispatch(authenticateCustomer(authReqData.customerAuth));
-    dispatch(authenticateClerk(authReqData.clerkAuth));
-    dispatch(registerCustomer(authReqData.customerRegister));
-    dispatch(registerClerk(authReqData.clerkRegister));
+    // dispatch(authenticateClerk(authReqData.clerkAuth));
+    // dispatch(registerCustomer(authReqData.customerRegister));
+    // dispatch(registerClerk(authReqData.clerkRegister));
   }, []);
   return <div>AuthStateTest</div>;
 };

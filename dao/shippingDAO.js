@@ -4,9 +4,13 @@ const conn = connectDB();
 
 export const fetchAllCustomerShipping = async (customerId) => {
   const sql = `
-    SELECT * FROM shipping
-    INNER JOIN dbf_ecommerce.order ON shipping.order_id = dbf_ecommerce.order.order_id
-    WHERE dbf_ecommerce.order.customer_id=?;
+    SELECT 
+      shipping_id, s.order_id, clerk_id, 
+      s.date_issued, shipping_status, shipping_address,
+      customer_id, order_status, payment_method
+    FROM shipping s
+    INNER JOIN dbf_ecommerce.order o ON s.order_id = o.order_id
+    WHERE o.customer_id=?;
   `;
   const values = [customerId];
 

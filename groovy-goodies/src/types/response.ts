@@ -1,3 +1,12 @@
+import {
+  Cart,
+  Order,
+  OrderItem,
+  Product,
+  Shipping,
+  Wishlist,
+} from './databaseSchema';
+
 export interface ErrorResponse {
   message: string;
   data: undefined | [];
@@ -26,4 +35,36 @@ export interface RegisterClerkResponse {
   clerk_name: string;
   clerk_email: string;
   clerk_password: string;
+}
+
+export interface WishListItem extends Wishlist, Product {}
+
+export interface CartItem extends Cart, Product {}
+
+export interface ShippingItem extends Shipping {
+  customer_id: number;
+  order_status: string;
+  payment_method: string;
+}
+
+export interface OrderDetail extends Order, OrderItem, Product {}
+
+export interface NewWishlistResponse {
+  wishlist_id: number;
+  product_id: string;
+  customer_id: number;
+}
+
+export interface NewOrderResponse {
+  order_id: number;
+  customer_id: number;
+  order_status: string;
+  payment_method: string;
+  selected_address: number;
+}
+
+export interface SelectAddressResponse {
+  address_id: number;
+  customer_id: number;
+  is_selected: number;
 }

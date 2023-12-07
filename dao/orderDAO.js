@@ -45,15 +45,15 @@ export const insertNewOrder = async (
   const orderItemSql = orderItemQueueTemp.join('');
 
   // 4. Execute the query
-  const [row] = await conn.query(orderItemSql);
+  await conn.query(orderItemSql);
 
   // 5. Return the new order object
   const newOrderObj = {
     order_id: orderId,
-    customerId,
+    customer_id: customerId,
     order_status: 'waiting',
-    paymentMethod,
-    selectedAddress: selectedAddressId,
+    payment_method: paymentMethod,
+    selected_address: selectedAddressId,
   };
 
   return newOrderObj;
@@ -78,13 +78,14 @@ export const fetchOrderDetail = async (orderId) => {
   const sql = `
     SELECT * FROM dbf_ecommerce.order 
     INNER JOIN order_item USING (order_id)
+    INNER JOIN product USING (product_id)
     HAVING order_id=?
   `;
   const values = [orderId];
 
   const [row] = await conn.query(sql, values);
 
-  return row;
+  return row[0];
 };
 
 export const fetchOrder = async (orderId) => {

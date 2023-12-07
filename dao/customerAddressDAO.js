@@ -27,13 +27,13 @@ export const insertNewAddress = async ({
 
   // Return back the newly created address with address ID
   const newAddress = {
-    addressId: row.insertId,
-    customerId,
+    address_id: row.insertId,
+    customer_id: customerId,
     country,
     province,
     state,
-    addressDetail,
-    isSelected: 1,
+    address_detail: addressDetail,
+    is_selected: 1,
   };
 
   return newAddress;
@@ -53,9 +53,9 @@ export const selectCustomerAddress = async (customerId, addressId) => {
   await conn.query(sql, values);
 
   const selectedAddressObj = {
-    addressId,
-    customerId,
-    isSelected: 1,
+    address_id: addressId,
+    customer_id: customerId,
+    is_selected: 1,
   };
 
   return selectedAddressObj;

@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "client": "npm run dev --prefix groovy-goodies",
-    "server": "nodemon server --ignore client",
+    "server": "nodemon server --ignore groovy-goodies",
     "start": "concurrently \"npm run client\" \"npm run server\""
   },
   "keywords": [
