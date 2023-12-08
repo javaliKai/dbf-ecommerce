@@ -4,12 +4,14 @@ import { TypedUseSelectorHook } from 'react-redux/es/types';
 import customerSlice from './customerSlice';
 import productSlice from './productSlice';
 import authSlice from './authSlice';
+import clerkSlice from './clerkSlice';
 
 const store = configureStore({
   reducer: {
     customer: customerSlice.reducer,
     product: productSlice.reducer,
     auth: authSlice.reducer,
+    clerk: clerkSlice.reducer,
   },
 });
 

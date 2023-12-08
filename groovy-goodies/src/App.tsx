@@ -1,13 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
 import AuthStateTest from './reduxTestComponents/AuthStateTest';
 import CustomerStateTest from './reduxTestComponents/CustomerStateTest';
+import ClerkStateTest from './reduxTestComponents/ClerkStateTest';
+import { useAppDispatch } from './store/store';
+import { getAllProducts } from './store/thunks/productThunk';
+import ProductStateTest from './reduxTestComponents/ProductStateTest';
 
 function App() {
   const [count, setCount] = useState(0);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, []);
 
   return (
     <>
@@ -29,7 +38,9 @@ function App() {
         </p>
         {/* Component test goes here... */}
         <AuthStateTest />
-        <CustomerStateTest />
+        {/* <CustomerStateTest /> */}
+        {/* <ClerkStateTest /> */}
+        {/* <ProductStateTest /> */}
       </div>
       <p className='read-the-docs'>
         Click on the Vite and React logos to learn more

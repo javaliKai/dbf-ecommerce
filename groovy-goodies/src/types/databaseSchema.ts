@@ -6,9 +6,9 @@ export interface Customer {
 }
 
 export interface Clerk {
-  clerk_id: number;
-  clerk_name: string;
-  clerk_email: string;
+  clerk_id: number | undefined;
+  clerk_name: string | undefined;
+  clerk_email: string | undefined;
 }
 
 export interface Product {

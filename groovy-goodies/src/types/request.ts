@@ -64,3 +64,38 @@ export interface SelectAddressRequest {
   token: string;
   addressId: number;
 }
+
+export interface ConfirmOrderRequest {
+  token: string;
+  orderId: number;
+}
+
+export interface SendNotificationRequest {
+  token: string;
+  customerId: number;
+  message: string;
+}
+
+export interface AddNewProductRequest {
+  token: string;
+  productName: string;
+  productDescription: string;
+  productImage: string;
+  productPrice: number;
+  productCategory: string;
+}
+
+export interface EditProductRequest {
+  token: string;
+  productId: string;
+  productName: string;
+  productDescription: string;
+  productImage: string;
+  productPrice: number;
+  productCategory: string;
+}
+
+export interface DeleteProductRequest {
+  token: string;
+  productId: string;
+}

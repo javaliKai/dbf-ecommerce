@@ -68,3 +68,19 @@ export interface SelectAddressResponse {
   customer_id: number;
   is_selected: number;
 }
+
+export interface ConfirmOrderResponse {
+  shipping_id: number;
+  order_id: number;
+  clerk_id: number;
+  shipping_status: string;
+  shipping_address: number;
+}
+
+export interface SendNotificationResponse {
+  notificationId: number;
+  customerId: number;
+  clerkId: number;
+  message: string;
+  isRead: number;
+}

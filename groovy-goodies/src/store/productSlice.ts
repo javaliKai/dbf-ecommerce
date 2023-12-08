@@ -1,17 +1,54 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Product } from '../types/databaseSchema';
+import { addNewProduct, getAllProducts } from './thunks/productThunk';
+import { ProductState } from '../types/state';
 
-const initialState = {
-  products: [] as Product[],
+const initialState: ProductState = {
+  products: [],
+  loading: false,
 };
 
 const productSlice = createSlice({
   name: 'product',
   initialState,
-  reducers: {
-    productSayHello() {
-      console.log('Hello from product');
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(getAllProducts.pending, (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
+    });
+    builder.addCase(getAllProducts.fulfilled, (state, action) => {
+      return {
+        ...state,
+        products: action.payload,
+        loading: false,
+      };
+    });
+    builder.addCase(getAllProducts.rejected, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+      };
+    });
+    builder.addCase(addNewProduct.pending, (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
+    });
+    builder.addCase(addNewProduct.fulfilled, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+      };
+    });
+    builder.addCase(addNewProduct.rejected, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+      };
+    });
   },
 });
 

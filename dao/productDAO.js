@@ -32,7 +32,7 @@ export const insertNewProduct = async ({
 
   const newProduct = {
     product_id: productId,
-    produc_name: productName,
+    product_name: productName,
     product_description: productDescription,
     product_image: productImage,
     product_price: productPrice,

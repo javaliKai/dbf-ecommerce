@@ -1,4 +1,4 @@
-import { Customer, Order, OrderItem } from './databaseSchema';
+import { Clerk, Customer, Order, Product } from './databaseSchema';
 import { CartItem, OrderDetail, ShippingItem, WishListItem } from './response';
 
 export interface AuthState {
@@ -15,5 +15,17 @@ export interface CustomerState extends Customer {
   cartItems: CartItem[];
   shipping: ShippingItem[];
   notifications: Notification[];
+  loading: boolean;
+}
+
+export interface ClerkState extends Clerk {
+  orders: Order[];
+  notifications: Notification[];
+  customers: Customer[];
+  loading: boolean;
+}
+
+export interface ProductState {
+  products: Product[];
   loading: boolean;
 }

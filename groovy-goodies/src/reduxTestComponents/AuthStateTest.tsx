@@ -13,8 +13,8 @@ const AuthStateTest = () => {
   const authState = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(authenticateCustomer(authReqData.customerAuth));
-    // dispatch(authenticateClerk(authReqData.clerkAuth));
+    // dispatch(authenticateCustomer(authReqData.customerAuth));
+    dispatch(authenticateClerk(authReqData.clerkAuth));
     // dispatch(registerCustomer(authReqData.customerRegister));
     // dispatch(registerClerk(authReqData.clerkRegister));
   }, []);
