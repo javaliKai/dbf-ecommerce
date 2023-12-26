@@ -5,7 +5,7 @@ import {
   getAllNotification,
   getAllOrders,
   sendNotification,
-} from '../store/thunks/clerkThunk';
+} from '../../../thunks/clerkThunk';
 import clerkReqData from './ClerkStateTestData';
 
 const ClerkStateTest = () => {

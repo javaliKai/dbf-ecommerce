@@ -15,7 +15,7 @@ import {
   getOrderDetail,
   updateCustomer,
   updateSelectedAddress,
-} from '../store/thunks/customerThunk';
+} from '../../../thunks/customerThunk';
 import { customerActions } from '../store/customerSlice';
 
 const CustomerStateTest = () => {

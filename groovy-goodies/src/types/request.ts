@@ -32,7 +32,7 @@ export interface NewWishlistRequest {
 
 export interface AddToCartRequest {
   token: string;
-  productId: number;
+  productId: string;
   quantity: number;
 }
 

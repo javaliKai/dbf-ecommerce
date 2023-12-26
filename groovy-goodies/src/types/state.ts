@@ -1,5 +1,18 @@
-import { Clerk, Customer, Order, Product } from './databaseSchema';
-import { CartItem, OrderDetail, ShippingItem, WishListItem } from './response';
+import {
+  Clerk,
+  Customer,
+  CustomerAddress,
+  Notification,
+  Order,
+  Product,
+} from './databaseSchema';
+import {
+  CartItem,
+  ErrorResponse,
+  OrderDetail,
+  ShippingItem,
+  WishListItem,
+} from './response';
 
 export interface AuthState {
   token: string | undefined;
@@ -10,11 +23,13 @@ export interface AuthState {
 
 export interface CustomerState extends Customer {
   orders: Order[];
-  orderDetail: OrderDetail | undefined;
+  orderDetail: OrderDetail[] | undefined;
   wishlists: WishListItem[];
   cartItems: CartItem[];
   shipping: ShippingItem[];
   notifications: Notification[];
+  address: CustomerAddress;
+  cartId: number | undefined;
   loading: boolean;
 }
 
@@ -28,4 +43,12 @@ export interface ClerkState extends Clerk {
 export interface ProductState {
   products: Product[];
   loading: boolean;
+}
+
+export interface UIState {
+  error: ErrorResponse | undefined;
+  alert: string | undefined;
+  showCartSidebar: boolean;
+  showWishlistSidebar: boolean;
+  showAddressModal: boolean;
 }

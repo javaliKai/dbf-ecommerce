@@ -14,7 +14,7 @@ export const fetchAllCustomerCartItems = async (customerId) => {
 
   const [row] = await conn.query(sql, values);
 
-  return row;
+  return row === null ? [] : row;
 };
 
 export const addCartItem = async (customerId, productId, quantity) => {

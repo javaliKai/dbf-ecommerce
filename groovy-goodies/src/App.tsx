@@ -1,52 +1,44 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import Header from './components/Header';
+import CartSidebar from './components/CartSidebar';
+import { useRoutes } from 'react-router-dom';
+import Routes from './Routes';
+import { useAppDispatch, useAppSelector } from './store/store';
+import { authenticateCustomer } from './store/thunks/authThunk';
+import { authActions } from './store/authSlice';
+import Alert from './components/Alert';
+import { getCartItems } from './store/thunks/customerThunk';
+import Footer from './components/Footer';
+import WishlistSidebar from './components/WishlistSidebar';
 
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
-import AuthStateTest from './reduxTestComponents/AuthStateTest';
-import CustomerStateTest from './reduxTestComponents/CustomerStateTest';
-import ClerkStateTest from './reduxTestComponents/ClerkStateTest';
-import { useAppDispatch } from './store/store';
-import { getAllProducts } from './store/thunks/productThunk';
-import ProductStateTest from './reduxTestComponents/ProductStateTest';
-
-function App() {
-  const [count, setCount] = useState(0);
+const App = () => {
   const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const routing = useRoutes(Routes(isAuthenticated));
 
+  // Add auto authentication here using useEffect
   useEffect(() => {
-    dispatch(getAllProducts());
+    if (localStorage.getItem('auth')) {
+      const savedAuth = JSON.parse(localStorage.getItem('auth')!);
+      if (savedAuth) {
+        dispatch(authActions.reAuth(savedAuth));
+        // dispatch(authenticateCustomer({}));
+      }
+    }
   }, []);
 
   return (
     <>
-      <div>
-        <a href='https://vitejs.dev' target='_blank'>
-          <img src={viteLogo} className='logo' alt='Vite logo' />
-        </a>
-        <a href='https://react.dev' target='_blank'>
-          <img src={reactLogo} className='logo react' alt='React logo' />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-        {/* Component test goes here... */}
-        <AuthStateTest />
-        {/* <CustomerStateTest /> */}
-        {/* <ClerkStateTest /> */}
-        {/* <ProductStateTest /> */}
-      </div>
-      <p className='read-the-docs'>
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header />
+      <main className='py-[5rem] px-[4rem]'>
+        <Alert />
+        {routing}
+      </main>
+      <CartSidebar />
+      <WishlistSidebar />
+      <Footer />
     </>
   );
-}
+};
 
 export default App;

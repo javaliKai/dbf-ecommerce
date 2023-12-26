@@ -16,6 +16,10 @@ import {
   getCustomerOrderDetail,
   updateCustomerInfo,
   removeCartItem,
+  removeWishlist,
+  fetchCustomerInfo,
+  fetchCustomerAddress,
+  fetchCustomerCartId,
 } from '../controller/customer.js';
 import auth from '../middlewares/auth.js';
 
@@ -28,6 +32,30 @@ const router = Express.Router();
  * @Desc      Retrieve all customer in the database (testing
  */
 router.get('/', auth, fetchAllCustomers);
+
+/**
+ * @Route     /customer/:customerId
+ * @Method    GET
+ * @Access    Private
+ * @Desc      Get the customer info
+ */
+router.get('/info/:customerId', auth, fetchCustomerInfo);
+
+/**
+ * @Route     /customer/cart-id
+ * @Method    GET
+ * @Access    Private
+ * @Desc      Get the customer cart_id
+ */
+router.get('/cart-id', auth, fetchCustomerCartId);
+
+/**
+ * @Route     /customer/address
+ * @Method    GET
+ * @Access    Private
+ * @Desc      Get the customer active address
+ */
+router.get('/address', auth, fetchCustomerAddress);
 
 /**
  * @Route     /customer/register
@@ -106,6 +134,14 @@ router.post('/add-wishlist/:productId', auth, addNewWishlist);
  * @Desc      Get the customer's wishlist information
  */
 router.get('/wishlist', auth, getAllWishlist);
+
+/**
+ * @Route     /customer/wishlist/:wishlistId
+ * @Method    DELETE
+ * @Access    Private
+ * @Desc      Delete the customer wishlist from database
+ */
+router.delete('/wishlist/:wishlistId', auth, removeWishlist);
 
 /**
  * @Route     /customer/cart

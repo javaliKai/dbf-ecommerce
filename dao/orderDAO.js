@@ -85,7 +85,7 @@ export const fetchOrderDetail = async (orderId) => {
 
   const [row] = await conn.query(sql, values);
 
-  return row[0];
+  return row;
 };
 
 export const fetchOrder = async (orderId) => {

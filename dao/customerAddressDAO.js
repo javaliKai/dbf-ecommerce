@@ -2,6 +2,15 @@ import connectDB from '../util/connectDB.js';
 
 const conn = connectDB();
 
+export const getCustomerAddress = async (customerId) => {
+  const sql = `SELECT * FROM customer_address WHERE cust_id=? AND is_selected=1`;
+  const values = [customerId];
+
+  const [row] = await conn.query(sql, values);
+
+  return row.length === 0 ? null : row[0];
+};
+
 export const insertNewAddress = async ({
   customerId,
   country,

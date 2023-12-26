@@ -83,6 +83,7 @@ const clerkSlice = createSlice({
         loading: true,
       };
     });
+    // @ts-ignore
     builder.addCase(getAllNotification.fulfilled, (state, action) => {
       return {
         ...state,

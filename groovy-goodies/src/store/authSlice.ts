@@ -18,7 +18,16 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    reAuth(state, action) {
+      state.token = action.payload.token;
+      state.isAuthenticated = true;
+      state.userId = action.payload.userId;
+    },
+    resetAuth() {
+      return initialState;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(authenticateCustomer.pending, (state, action) => {
       return {
@@ -27,6 +36,7 @@ const authSlice = createSlice({
       };
     });
     builder.addCase(authenticateCustomer.fulfilled, (state, action) => {
+      localStorage.setItem('auth', JSON.stringify(action.payload));
       return {
         loading: false,
         token: action.payload.token,

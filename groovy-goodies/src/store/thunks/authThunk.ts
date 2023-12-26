@@ -12,6 +12,7 @@ import {
 } from '../../types/request';
 import { ErrorResponse } from 'react-router-dom';
 import { authActions } from '../authSlice';
+import { uiSliceActions } from '../uiSlice';
 
 // Note: createAsyncThunk config --> retType, paramType, { opt... }
 
@@ -29,11 +30,14 @@ export const authenticateCustomer = createAsyncThunk<
 
     const data = req.data;
 
+    thunkApi.dispatch(uiSliceActions.setAlert('Login Success'));
+
     return data;
     // Note: the further step will be handled in the main authState slice file
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.log(error.response?.data);
+      thunkApi.dispatch(uiSliceActions.setError(error.response?.data));
+      thunkApi.dispatch(authActions.resetAuth());
       return thunkApi.rejectWithValue(error.response?.data);
     }
   }
@@ -50,9 +54,12 @@ export const authenticateClerk = createAsyncThunk<
       password,
     });
 
+    thunkApi.dispatch(uiSliceActions.setAlert('Login Success'));
+
     return req.data;
   } catch (error) {
     if (error instanceof AxiosError) {
+      thunkApi.dispatch(uiSliceActions.setError(error.response?.data));
       return thunkApi.rejectWithValue(error.response?.data);
     }
   }
@@ -73,9 +80,10 @@ export const registerCustomer = createAsyncThunk<
         password,
       });
 
-      // Todo: upon succession, update state in notification using thunkApi
+      thunkApi.dispatch(uiSliceActions.setAlert('Register Success'));
     } catch (error) {
       if (error instanceof AxiosError) {
+        thunkApi.dispatch(uiSliceActions.setError(error.response?.data));
         return thunkApi.rejectWithValue(error.response?.data);
       }
     }
@@ -94,9 +102,10 @@ export const registerClerk = createAsyncThunk<
       password,
     });
 
-    // Todo: upon succession, update state in notification using thunkApi
+    thunkApi.dispatch(uiSliceActions.setAlert('Register Success'));
   } catch (error) {
     if (error instanceof AxiosError) {
+      thunkApi.dispatch(uiSliceActions.setError(error.response?.data));
       return thunkApi.rejectWithValue(error.response?.data);
     }
   }

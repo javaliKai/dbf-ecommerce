@@ -10,12 +10,13 @@ import {
   ConfirmOrderRequest,
   SendNotificationRequest,
 } from '../../types/request';
+import { uiSliceActions } from '../uiSlice';
 
 export const getAllOrders = createAsyncThunk<
   Order[],
   string,
   { rejectValue: ErrorResponse }
->('customer/getAllOrders', async (token, thunkApi) => {
+>('clerk/getAllOrders', async (token, thunkApi) => {
   try {
     const req = await axios.get('api/clerk/order', {
       headers: {
@@ -24,12 +25,11 @@ export const getAllOrders = createAsyncThunk<
     });
 
     const data = req.data;
-    console.log(data);
 
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.log(error.response?.data);
+      thunkApi.dispatch(uiSliceActions.setError(error.response?.data));
       return thunkApi.rejectWithValue(error.response?.data);
     }
   }
@@ -39,7 +39,7 @@ export const confirmOrder = createAsyncThunk<
   ConfirmOrderResponse,
   ConfirmOrderRequest,
   { rejectValue: ErrorResponse }
->('customer/confirmOrder', async ({ token, orderId }, thunkApi) => {
+>('clerk/confirmOrder', async ({ token, orderId }, thunkApi) => {
   try {
     const req = await axios.put(
       `api/clerk/order/${orderId}`,
@@ -52,12 +52,15 @@ export const confirmOrder = createAsyncThunk<
     );
 
     const data = req.data;
-    console.log(data);
+
+    thunkApi.dispatch(
+      uiSliceActions.setAlert(`OrderId: ${orderId} is Confirmed`)
+    );
 
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.log(error.response?.data);
+      thunkApi.dispatch(uiSliceActions.setError(error.response?.data));
       return thunkApi.rejectWithValue(error.response?.data);
     }
   }
@@ -68,7 +71,7 @@ export const sendNotification = createAsyncThunk<
   SendNotificationRequest,
   { rejectValue: ErrorResponse }
 >(
-  'customer/sendNotification',
+  'clerk/sendNotification',
   async ({ token, customerId, message }, thunkApi) => {
     try {
       const body = {
@@ -84,12 +87,11 @@ export const sendNotification = createAsyncThunk<
       });
 
       const data = req.data;
-      console.log(data);
 
       return data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error.response?.data);
+        thunkApi.dispatch(uiSliceActions.setError(error.response?.data));
         return thunkApi.rejectWithValue(error.response?.data);
       }
     }
@@ -100,7 +102,7 @@ export const getAllNotification = createAsyncThunk<
   Notification[],
   string,
   { rejectValue: ErrorResponse }
->('customer/getAllNotification', async (token, thunkApi) => {
+>('clerk/getAllNotification', async (token, thunkApi) => {
   try {
     const req = await axios.get('api/clerk/notification', {
       headers: {
@@ -109,12 +111,10 @@ export const getAllNotification = createAsyncThunk<
     });
 
     const data = req.data;
-    console.log(data);
 
     return data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      console.log(error.response?.data);
       return thunkApi.rejectWithValue(error.response?.data);
     }
   }

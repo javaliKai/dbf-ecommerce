@@ -39,7 +39,10 @@ export interface RegisterClerkResponse {
 
 export interface WishListItem extends Wishlist, Product {}
 
-export interface CartItem extends Cart, Product {}
+export interface CartItem extends Cart, Product {
+  cartitem_id: number;
+  quantity: number;
+}
 
 export interface ShippingItem extends Shipping {
   customer_id: number;

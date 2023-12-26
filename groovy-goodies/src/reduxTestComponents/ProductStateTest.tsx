@@ -5,7 +5,7 @@ import {
   addNewProduct,
   deleteProduct,
   updateProduct,
-} from '../store/thunks/productThunk';
+} from '../../../thunks/productThunk';
 
 const ProductStateTest = () => {
   const dispatch = useAppDispatch();

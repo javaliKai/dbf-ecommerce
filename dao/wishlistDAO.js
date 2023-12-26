@@ -44,5 +44,16 @@ export const fetchAllCustomerWishlist = async (customerId) => {
 
   const [row] = await conn.query(sql, values);
 
+  return row === null ? [] : row;
+};
+
+export const deleteWishlist = async (wishlistId) => {
+  const sql = `
+    DELETE FROM wishlist WHERE wishlist_id=?
+  `;
+  const values = [wishlistId];
+
+  const [row] = await conn.query(sql, values);
+
   return row;
 };

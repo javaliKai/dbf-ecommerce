@@ -5,8 +5,12 @@ import {
   addNewOrder,
   addNewWishlist,
   addToCart,
+  deleteWishlist,
   getAllWishlist,
   getCartItems,
+  getCustomerAddress,
+  getCustomerCartId,
+  getCustomerInfo,
   getCustomerNotifications,
   getCustomerOrders,
   getCustomerShippings,
@@ -14,6 +18,7 @@ import {
   updateSelectedAddress,
 } from './thunks/customerThunk';
 import { WishListItem } from '../types/response';
+import { CustomerAddress } from '../types/databaseSchema';
 
 const initialState: CustomerState = {
   cust_id: undefined,
@@ -26,6 +31,8 @@ const initialState: CustomerState = {
   cartItems: [],
   shipping: [],
   notifications: [],
+  address: {} as CustomerAddress,
+  cartId: undefined,
   loading: false,
 };
 
@@ -36,8 +43,71 @@ const customerSlice = createSlice({
     unloadOrderDetail(state) {
       state.orderDetail = undefined;
     },
+    resetCustomer() {
+      return initialState;
+    },
   },
   extraReducers: (builder) => {
+    builder.addCase(getCustomerCartId.pending, (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
+    });
+    builder.addCase(getCustomerCartId.fulfilled, (state, action) => {
+      return {
+        ...state,
+        cartId: action.payload.cart_id,
+        loading: false,
+      };
+    });
+    builder.addCase(getCustomerCartId.rejected, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+      };
+    });
+    builder.addCase(getCustomerAddress.pending, (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
+    });
+    builder.addCase(getCustomerAddress.fulfilled, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+        address: action.payload,
+      };
+    });
+    builder.addCase(getCustomerAddress.rejected, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+      };
+    });
+    builder.addCase(getCustomerInfo.pending, (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
+    });
+    builder.addCase(getCustomerInfo.fulfilled, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+        cust_email: action.payload.cust_email,
+        cust_id: action.payload.cust_id,
+        cust_name: action.payload.cust_name,
+        cust_phone: action.payload.cust_phone,
+      };
+    });
+    builder.addCase(getCustomerInfo.rejected, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+      };
+    });
     builder.addCase(getAllWishlist.pending, (state, action) => {
       return {
         ...state,
@@ -52,6 +122,24 @@ const customerSlice = createSlice({
       };
     });
     builder.addCase(getAllWishlist.rejected, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+      };
+    });
+    builder.addCase(deleteWishlist.pending, (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
+    });
+    builder.addCase(deleteWishlist.fulfilled, (state, action) => {
+      return {
+        ...state,
+        loading: false,
+      };
+    });
+    builder.addCase(deleteWishlist.rejected, (state, action) => {
       return {
         ...state,
         loading: false,

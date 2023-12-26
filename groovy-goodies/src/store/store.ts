@@ -5,6 +5,7 @@ import customerSlice from './customerSlice';
 import productSlice from './productSlice';
 import authSlice from './authSlice';
 import clerkSlice from './clerkSlice';
+import uiSlice from './uiSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     product: productSlice.reducer,
     auth: authSlice.reducer,
     clerk: clerkSlice.reducer,
+    ui: uiSlice.reducer,
   },
 });
 

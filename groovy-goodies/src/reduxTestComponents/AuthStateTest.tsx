@@ -5,7 +5,7 @@ import {
   authenticateCustomer,
   registerClerk,
   registerCustomer,
-} from '../store/thunks/authThunk';
+} from '../../../thunks/authThunk';
 import authReqData from './AuthStateTestData';
 
 const AuthStateTest = () => {

@@ -1,12 +1,15 @@
 import {
   findCustomerByEmail,
+  findCustomerById,
   getAllCustomers,
+  getCustomerCartId,
   insertNewCustomer,
   updateCustomer,
 } from '../dao/customerDAO.js';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import {
+  deleteWishlist,
   fetchAllCustomerWishlist,
   findWishlist,
   insertNewWishlist,
@@ -28,6 +31,7 @@ import { fetchAllCustomerShipping } from '../dao/shippingDAO.js';
 import { fetchAllCustomerNotification } from '../dao/notificationDAO.js';
 import {
   findSelectedCustomerAddressId,
+  getCustomerAddress,
   insertNewAddress,
   selectCustomerAddress,
 } from '../dao/customerAddressDAO.js';
@@ -35,6 +39,25 @@ import {
 export const fetchAllCustomers = async (req, res, next) => {
   try {
     const data = await getAllCustomers();
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const fetchCustomerInfo = async (req, res, next) => {
+  const { customerId } = req.params;
+  try {
+    const data = await findCustomerById(customerId);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const fetchCustomerCartId = async (req, res, next) => {
+  try {
+    const data = await getCustomerCartId(req.customerId);
     res.status(200).json(data);
   } catch (error) {
     next(error);
@@ -72,6 +95,15 @@ export const registerNewCustomer = async (req, res, next) => {
   try {
     const data = await insertNewCustomer(name, phone, email, hashedPassword);
     res.json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const fetchCustomerAddress = async (req, res, next) => {
+  try {
+    const address = await getCustomerAddress(req.customerId);
+    res.send(address);
   } catch (error) {
     next(error);
   }
@@ -167,6 +199,16 @@ export const getAllWishlist = async (req, res, next) => {
     next(error);
   }
   // Send the result
+};
+
+export const removeWishlist = async (req, res, next) => {
+  const { wishlistId } = req.params;
+  try {
+    await deleteWishlist(wishlistId);
+    res.send('deleted');
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const getCartItems = async (req, res, next) => {

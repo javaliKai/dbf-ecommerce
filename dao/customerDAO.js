@@ -7,6 +7,14 @@ export const getAllCustomers = async () => {
   return row;
 };
 
+export const getCustomerCartId = async (customerId) => {
+  const [row] = await conn.query(
+    'SELECT cart_id FROM cart WHERE customer_id=?',
+    [customerId]
+  );
+  return row[0];
+};
+
 export const insertNewCustomer = async (name, phone, email, password) => {
   // Prepare sql statement
   const sql = `
@@ -36,6 +44,17 @@ export const findCustomerByEmail = async (email) => {
     SELECT * FROM customer WHERE cust_email=?
   `;
   const values = [email];
+
+  const [row] = await conn.query(sql, values);
+
+  return row.length === 0 ? null : row[0];
+};
+
+export const findCustomerById = async (customerId) => {
+  const sql = `
+    SELECT * FROM customer WHERE cust_id=?
+  `;
+  const values = [customerId];
 
   const [row] = await conn.query(sql, values);
 
